@@ -6,6 +6,9 @@ const protein = document.querySelector('input[name="protein"]')
 
 const $form = document.getElementById('form')
 
+// Variables
+let list = []
+
 // Event Listeners
 description.addEventListener('keydown', () => {
   description.classList.remove('is-invalid')
@@ -23,7 +26,7 @@ protein.addEventListener('keydown', () => {
 $form.addEventListener('submit', (event) => {
   event.preventDefault()
   const data = new FormData($form)
-  validateInputs(data)
+  validateInputs(data)? add(data) : ''
 })
 
 
@@ -40,8 +43,25 @@ const validateInputs = (data) => {
     data.get('carbs') &&
     data.get('protein')
   ) {
-    console.log('OK!')
+    return true
   }
+}
+
+const add = item => {
+  const newItem = {
+    description: item.get('description'),
+    calories: parseInt(item.get('calories'), 10),
+    carbs: parseInt(item.get('carbs'), 10),
+    protein: parseInt(item.get('protein'), 10)
+  }
+  list.push(newItem)
+  cleanInputs()
+  console.log(list)
+}
+
+const cleanInputs = () => {
+  $form.reset()
+  description.focus()
 }
 
 const compose = (...functions) => data =>
