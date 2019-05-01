@@ -4,6 +4,10 @@ const calories = document.querySelector('input[name="calories"]')
 const carbs = document.querySelector('input[name="carbs"]')
 const protein = document.querySelector('input[name="protein"]')
 
+const $totalCalories = document.getElementById('totalCalories')
+const $totalCarbs = document.getElementById('totalCarbs')
+const $totalProtein = document.getElementById('totalProtein')
+
 const $form = document.getElementById('form')
 
 // Variables
@@ -56,7 +60,22 @@ const addItem = item => {
   }
   list.push(newItem)
   cleanInputs()
+  updateTotals()
   console.log(list)
+}
+
+const updateTotals = () => {
+  let calories = 0, carbs = 0, protein = 0
+
+  list.map(item => {
+    calories += item.calories,
+    carbs += item.carbs,
+    protein += item.protein
+  })
+  $totalCalories.textContent = calories
+  $totalCarbs.textContent = carbs
+  $totalProtein.textContent = protein
+
 }
 
 const cleanInputs = () => {
@@ -89,6 +108,13 @@ const tag = t => {
     tagAttrs(t)
   }
 }
+
+const tableRowTag = tag('tr')
+// const tableRows = items => tableRowTag(tableCells(items))
+const tableRows = items => compose(tableRowTag, tableCells)(items)
+
+const tableCell = tag('td')
+const tableCells = items => item.map(tableCell).join('')
 
 const compose = (...functions) => data =>
   functions.reduceRight((value, func) => func(value), data)
