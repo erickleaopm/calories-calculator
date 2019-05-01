@@ -1,40 +1,7 @@
-// Define Web Elements
-const description = document.querySelector('input[name="description"]')
-const calories = document.querySelector('input[name="calories"]')
-const carbs = document.querySelector('input[name="carbs"]')
-const protein = document.querySelector('input[name="protein"]')
-
-const $totalCalories = document.getElementById('totalCalories')
-const $totalCarbs = document.getElementById('totalCarbs')
-const $totalProtein = document.getElementById('totalProtein')
-
-const $form = document.getElementById('form')
-
-// Variables
-let list = []
-
-// Event Listeners
-description.addEventListener('keydown', () => {
-  description.classList.remove('is-invalid')
-})
-calories.addEventListener('keydown', () => {
-  calories.classList.remove('is-invalid')
-})
-carbs.addEventListener('keydown', () => {
-  carbs.classList.remove('is-invalid')
-})
-protein.addEventListener('keydown', () => {
-  protein.classList.remove('is-invalid')
-})
-
-$form.addEventListener('submit', (event) => {
-  event.preventDefault()
-  const data = new FormData($form)
-  validateInputs(data)? addItem(data) : ''
-})
-
-
 // Functions
+const compose = (...functions) => data =>
+  functions.reduceRight((value, func) => func(value), data)
+
 const validateInputs = (data) => {
   data.get('description') ? '' : description.classList.add('is-invalid')
   data.get('calories') ? '' : calories.classList.add('is-invalid')
@@ -59,9 +26,9 @@ const addItem = item => {
     protein: parseInt(item.get('protein'), 10)
   }
   list.push(newItem)
-  cleanInputs()
+  cleanInputs() // Clean form
   updateTotals()
-  console.log(list)
+  renderItems() // Render table rows
 }
 
 const updateTotals = () => {
@@ -81,6 +48,14 @@ const updateTotals = () => {
 const cleanInputs = () => {
   $form.reset()
   description.focus()
+}
+
+const renderItems = () => {
+  $tableBody.innerHTML = '' // Empty
+  list.map(item => {
+    console.log(item.description)
+    $tableBody.innerHTML += tableRow([item.description, item.calories, item.carbs, item.protein])
+  })
 }
 
 const attrsToString = (obj = {}) => {
@@ -103,18 +78,52 @@ const tagAttrs = obj => (content = "") =>
 
 const tag = t => {
   if(typeof t === 'string') {
-    tagAttrs({tag: t})
+    return tagAttrs({tag: t})
   } else {
-    tagAttrs(t)
+    return tagAttrs(t)
   }
 }
 
 const tableRowTag = tag('tr')
-// const tableRows = items => tableRowTag(tableCells(items))
-const tableRows = items => compose(tableRowTag, tableCells)(items)
+const tableRow = items => compose(tableRowTag, tableCells)(items)
 
 const tableCell = tag('td')
-const tableCells = items => item.map(tableCell).join('')
+const tableCells = items => items.map(tableCell).join('')
 
-const compose = (...functions) => data =>
-  functions.reduceRight((value, func) => func(value), data)
+
+// Define Web Elements
+const description = document.querySelector('input[name="description"]')
+const calories = document.querySelector('input[name="calories"]')
+const carbs = document.querySelector('input[name="carbs"]')
+const protein = document.querySelector('input[name="protein"]')
+
+const $totalCalories = document.getElementById('totalCalories')
+const $totalCarbs = document.getElementById('totalCarbs')
+const $totalProtein = document.getElementById('totalProtein')
+
+const $form = document.getElementById('form')
+const $tableBody = document.querySelector('tbody')
+
+
+// Variables
+let list = []
+
+// Event Listeners
+description.addEventListener('keydown', () => {
+  description.classList.remove('is-invalid')
+})
+calories.addEventListener('keydown', () => {
+  calories.classList.remove('is-invalid')
+})
+carbs.addEventListener('keydown', () => {
+  carbs.classList.remove('is-invalid')
+})
+protein.addEventListener('keydown', () => {
+  protein.classList.remove('is-invalid')
+})
+
+$form.addEventListener('submit', (event) => {
+  event.preventDefault()
+  const data = new FormData($form)
+  validateInputs(data)? addItem(data) : ''
+})
