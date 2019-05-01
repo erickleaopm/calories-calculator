@@ -72,10 +72,11 @@ const attrsToString = (obj = {}) => {
     let attr = keys[i]
     attrs.push(`${attr}="${obj[attr]}"`)
   }
-
+  
   const string = attrs.join(' ')
-
   return string
+
+  /* return Object.keys(obj).map((key) => `${key}="${obj[key]}"`).join(' ') */
 }
 
 const tagAttrs = obj => (content = "") => 
