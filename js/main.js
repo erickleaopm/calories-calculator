@@ -56,31 +56,13 @@ const cleanInputs = () => {
   description.focus()
 }
 
-const attrsToString = (obj = {}) => {
-  const keys = Object.keys(obj)
-  const attrs = []
-  
-  for(let i=0; i<keys.length; i++) {
-    let attr = keys[i]
-    attrs.push(`${attr}="${obj[attr]}"`)
-  }
-  
-  const string = attrs.join(' ')
-  return string
-
-  /* return Object.keys(obj).map((key) => `${key}="${obj[key]}"`).join(' ') */
-}
+const attrsToString = (obj = {}) => 
+  Object.keys(obj).map((attr) => `${attr}="${obj[attr]}"`).join(' ')
 
 const tagAttrs = obj => (content = "") => 
   `<${obj.tag}${obj.attrs ? ' ' : ''}${attrsToString(obj.attrs)}>${content}</${obj.tag}>`
 
-const tag = t => {
-  if(typeof t === 'string') {
-    return tagAttrs({tag: t})
-  } else {
-    return tagAttrs(t)
-  }
-}
+const tag = t => typeof t === 'string'? tagAttrs({tag: t}) : tagAttrs(t)
 
 const trashIcon = tag({
   tag: 'i',
@@ -101,13 +83,10 @@ const renderItems = () => {
       }
     })(trashIcon)
     $tableBody.innerHTML += tableRow([item.description, item.calories, item.carbs, item.protein, removeButton])
-  })
-  // Then add event click to remove item
-  list.map((item, index) => {
-    const $removeButton = document.querySelector(`button[data-item="${index}"]`)
-    $removeButton.addEventListener('click', () => {
-      removeItem(index)
-    }, false)
+    const $removeButtons = document.querySelectorAll(`button[data-item]`)
+    $removeButtons.forEach((item, index) => 
+      item.addEventListener('click', () => removeItem(index), false)
+    )
   })
 }
 
@@ -132,7 +111,7 @@ const $form = document.getElementById('form')
 const $tableBody = document.querySelector('tbody')
 
 
-// Variables
+// List
 
 let list = []
 
