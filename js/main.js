@@ -3,27 +3,24 @@ const compose = (...functions) => data =>
   functions.reduceRight((value, func) => func(value), data)
 
 const validateInputs = (data) => {
-  data.get('description') ? '' : description.classList.add('is-invalid')
-  data.get('calories') ? '' : calories.classList.add('is-invalid')
-  data.get('carbs') ? '' : carbs.classList.add('is-invalid')
-  data.get('protein') ? '' : protein.classList.add('is-invalid')
+  properties.map(property => 
+    data.get(property.name) ? '' : property.classList.add('is-invalid')
+  )
 
-  if(
-    data.get('description') &&
-    data.get('calories') &&
-    data.get('carbs') &&
-    data.get('protein')
-  ) {
-    return true
-  }
+  return properties.every(property => data.get(property.name))
+
 }
 
 const addItem = item => {
   const newItem = {
     description: item.get('description'),
-    calories: parseInt(item.get('calories'), 10),
-    carbs: parseInt(item.get('carbs'), 10),
-    protein: parseInt(item.get('protein'), 10)
+    quantity: parseInt(item.get('quantity'), 10),
+    calories: parseInt(item.get('quantity'), 10) * parseInt(item.get('calories'), 10),
+    carbs: parseInt(item.get('quantity'), 10) * parseInt(item.get('carbs'), 10),
+    protein: parseInt(item.get('quantity'), 10) * parseInt(item.get('protein'), 10),
+    unitCalories: parseInt(item.get('calories'), 10),
+    unitCarbs: parseInt(item.get('carbs'), 10),
+    unitProtein: parseInt(item.get('protein'), 10)
   }
   list.push(newItem)
   cleanInputs() // Clean form
@@ -82,7 +79,7 @@ const renderItems = () => {
         'data-item': index
       }
     })(trashIcon)
-    $tableBody.innerHTML += tableRow([item.description, item.calories, item.carbs, item.protein, removeButton])
+    $tableBody.innerHTML += tableRow([item.description, item.quantity, item.unitCalories, item.calories, item.unitCarbs, item.carbs, item.unitProtein, item.protein, removeButton])
     const $removeButtons = document.querySelectorAll(`button[data-item]`)
     $removeButtons.forEach((item, index) => 
       item.addEventListener('click', () => removeItem(index), false)
@@ -99,6 +96,7 @@ const tableCells = items => items.map(tableCell).join('')
 
 // Define Web Elements
 const description = document.querySelector('input[name="description"]')
+const quantity = document.querySelector('input[name="quantity"]')
 const calories = document.querySelector('input[name="calories"]')
 const carbs = document.querySelector('input[name="carbs"]')
 const protein = document.querySelector('input[name="protein"]')
@@ -111,22 +109,16 @@ const $form = document.getElementById('form')
 const $tableBody = document.querySelector('tbody')
 
 
-// List
+// Variables
 
 let list = []
+let properties = [description, quantity, calories, carbs, protein]
 
 // Event Listeners
-description.addEventListener('keydown', () => {
-  description.classList.remove('is-invalid')
-})
-calories.addEventListener('keydown', () => {
-  calories.classList.remove('is-invalid')
-})
-carbs.addEventListener('keydown', () => {
-  carbs.classList.remove('is-invalid')
-})
-protein.addEventListener('keydown', () => {
-  protein.classList.remove('is-invalid')
+properties.forEach(property => {
+  property.addEventListener('keydown', () => {
+    property.classList.remove('is-invalid')
+  })
 })
 
 $form.addEventListener('submit', (event) => {

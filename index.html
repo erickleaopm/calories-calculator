@@ -13,7 +13,7 @@
 <body>
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-9">
+      <div class="col-md-10">
         <div class="card my-5 bg-light text-center">
           <div class="card-header">
             <h1>Calories Counter</h1>
@@ -23,8 +23,12 @@
               <thead>
                 <tr>
                   <th scope="col">Description</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Calories / Unit</th>
                   <th scope="col">Calories</th>
+                  <th scope="col">Carbs / Unit</th>
                   <th scope="col">Carbs</th>
+                  <th scope="col">Protein / Unit</th>
                   <th scope="col">Protein</th>
                   <th></th>
                 </tr>
@@ -34,8 +38,12 @@
               <thead class="thead-light">
                 <tr>
                   <th>Totals</th>
+                  <th></th>
+                  <th id="unitCalories"></th>
                   <th id="totalCalories">0</th>
+                  <th id="unitCarbs"></th>
                   <th id="totalCarbs">0</th>
+                  <th id="unitProtein"></th>
                   <th id="totalProtein">0</th>
                   <th></th>
                 </tr>
@@ -47,6 +55,9 @@
               <div class="form-row mb-2">
                 <div class="col">
                     <input type="text" name="description" class="form-control mb-2 mr-sm-2" placeholder="Description">
+                </div>
+                <div class="col">
+                    <input type="number" min="0" name="quantity" class="form-control mb-2 mr-sm-2" placeholder="Quantity">
                 </div>
                 <div class="col">
                     <input type="number" min="0" name="calories" class="form-control mb-2 mr-sm-2" placeholder="Calories">
