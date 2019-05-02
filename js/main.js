@@ -31,6 +31,12 @@ const addItem = item => {
   renderItems() // Render table rows
 }
 
+const removeItem = (index) => {
+  list.splice(index, 1)
+  updateTotals()
+  renderItems()
+}
+
 const updateTotals = () => {
   let calories = 0, carbs = 0, protein = 0
 
@@ -48,14 +54,6 @@ const updateTotals = () => {
 const cleanInputs = () => {
   $form.reset()
   description.focus()
-}
-
-const renderItems = () => {
-  $tableBody.innerHTML = '' // Empty
-  list.map(item => {
-    console.log(item.description)
-    $tableBody.innerHTML += tableRow([item.description, item.calories, item.carbs, item.protein])
-  })
 }
 
 const attrsToString = (obj = {}) => {
@@ -84,6 +82,35 @@ const tag = t => {
   }
 }
 
+const trashIcon = tag({
+  tag: 'i',
+  attrs: {
+    class: 'fa fa-trash-alt'
+  }
+})('')
+
+const renderItems = () => {
+  $tableBody.innerHTML = '' // Empty
+  // Create rows and columns with button remove
+  list.map((item, index) => {
+    const removeButton = tag({
+      tag: 'button',
+      attrs: {
+        class: 'btn btn-outline-danger',
+        'data-item': index
+      }
+    })(trashIcon)
+    $tableBody.innerHTML += tableRow([item.description, item.calories, item.carbs, item.protein, removeButton])
+  })
+  // Then add event click to remove item
+  list.map((item, index) => {
+    const $removeButton = document.querySelector(`button[data-item="${index}"]`)
+    $removeButton.addEventListener('click', () => {
+      removeItem(index)
+    }, false)
+  })
+}
+
 const tableRowTag = tag('tr')
 const tableRow = items => compose(tableRowTag, tableCells)(items)
 
@@ -106,6 +133,7 @@ const $tableBody = document.querySelector('tbody')
 
 
 // Variables
+
 let list = []
 
 // Event Listeners
